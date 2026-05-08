@@ -71,10 +71,10 @@ body{
 /* PAGE (A4 SETUP) */
 .page{
     width:794px;
-    height:1123px; /* Standard A4 height in px */
+    height:1123px; 
     margin:auto;
     border:1px solid #eee;
-    padding:40px 60px; /* Reduced padding slightly to prevent overflow */
+    padding:40px 60px;
     background:white;
     overflow: hidden;
     position: relative;
@@ -83,11 +83,11 @@ body{
 .inst-name{ text-align:center; font-size:28px; font-weight:bold; line-height:1.2; }
 .inst-place{ text-align:center; font-size:22px; font-weight:bold; margin-top:5px; }
 
-/* LOGO SPACE - Increased Size */
+/* LOGO SPACE */
 .logo-box{
     text-align:center;
-    margin:30px 0;
-    height: 220px; /* Increased from 160px */
+    margin:25px 0;
+    height: 220px; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -97,42 +97,32 @@ body{
     width: auto;
 }
 
-.department{ text-align:center; font-size:24px; font-weight:bold; min-height: 1.2em; text-transform: uppercase; }
+/* Department styling updated to normal case weight */
+.department{ text-align:center; font-size:24px; font-weight:bold; min-height: 1.2em; }
 
-/* FADED LINE */
 .line{ 
     height:1px; 
     background:#e2e8f0; 
-    margin:20px 0; /* Slightly reduced margin */
+    margin:18px 0; 
 }
 
 .assignment{ text-align:center; font-size:26px; font-weight:bold; }
 
-.section{ text-align:center; line-height:1.8; font-size:22px; }
-.section h3{ margin-bottom:8px; font-size:26px; border-bottom: 1px solid #eee; display: inline-block; padding-bottom: 2px; }
+.section{ text-align:center; line-height:1.7; font-size:22px; }
+.section h3{ margin-bottom:6px; font-size:26px; border-bottom: 1px solid #eee; display: inline-block; padding-bottom: 2px; }
 
-/* PRINT MEDIA - Fixed Blank Page Issue */
+/* PRINT MEDIA */
 @media print {
-    @page { 
-        size: A4; 
-        margin: 0; 
-    }
-    html, body {
-        height: 100%;
-        margin: 0 !important; 
-        padding: 0 !important;
-        overflow: hidden;
-    }
+    @page { size: A4; margin: 0; }
+    html, body { height: 100%; margin: 0 !important; padding: 0 !important; overflow: hidden; }
     .form-box, .preview-title { display: none !important; }
-    .container { display: block; margin: 0; padding: 0; width: 100%; }
-    .preview-box { padding: 0; box-shadow: none; border: none; margin: 0; }
+    .container { display: block; }
+    .preview-box { padding: 0; box-shadow: none; border: none; }
     .page { 
         border: none; 
         width: 100%; 
         height: 100vh;
-        margin: 0;
         padding: 50px 60px;
-        box-shadow: none;
     }
     .line { 
         background-color: #e2e8f0 !important; 
@@ -148,7 +138,7 @@ body{
 <div class="container">
     <div class="form-box">
         <h2>Enter Details</h2>
-        <div class="input-box"><label>Assignment No.</label><input type="text" id="assignment" placeholder="e.g. 03" oninput="updatePreview()"></div>
+        <div class="input-box"><label>Assignment No.</label><input type="text" id="assignment" placeholder="03" oninput="updatePreview()"></div>
         
         <div class="input-box"><label>Main Department (Logo Bottom)</label><input type="text" id="mainDept" placeholder="e.g. Electrical Engineering" oninput="updatePreview()"></div>
         
@@ -159,8 +149,7 @@ body{
         <div class="input-box"><label>Year / Semester</label><input type="text" id="semester" oninput="updatePreview()"></div>
         <div class="input-box"><label>Submitted To (Teacher Name)</label><input type="text" id="teacher" oninput="updatePreview()"></div>
         <div class="input-box"><label>Teacher's Designation</label><input type="text" id="designation" oninput="updatePreview()"></div>
-        
-        <div class="input-box"><label>Teacher's Department</label><input type="text" id="teacherDept" placeholder="e.g. Dept. of Applied Science" oninput="updatePreview()"></div>
+        <div class="input-box"><label>Teacher's Department</label><input type="text" id="teacherDept" oninput="updatePreview()"></div>
         
         <button class="btn-download" onclick="window.print()">Download PDF</button>
     </div>
@@ -212,6 +201,13 @@ body{
 </div>
 
 <script>
+// Function for Title Case (Each word capitalized)
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
 function updatePreview(){
     const fields = ['assignment', 'mainDept', 'subject', 'code', 'name', 'roll', 'semester', 'teacher', 'designation', 'teacherDept'];
     
@@ -221,7 +217,9 @@ function updatePreview(){
         
         if(pElement) {
             if(id === 'mainDept') {
-                pElement.innerText = val ? "DEPARTMENT OF " + val.toUpperCase() : "";
+                // "Department of" is fixed, value is Title Cased
+                const formattedValue = toTitleCase(val);
+                pElement.innerText = val ? "Department of " + formattedValue : "";
             } else {
                 pElement.innerText = val;
             }
