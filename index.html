@@ -42,8 +42,8 @@ body{
 }
 
 .input-box{ margin-bottom:12px; }
-.input-box label{ display:block; margin-bottom:4px; font-size:16px; font-weight:bold; }
-.input-box input{ width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-size:16px; outline:none; }
+.input-box label{ display:block; margin-bottom:4px; font-size:14px; font-weight:bold; color: #334155; }
+.input-box input{ width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-size:15px; outline:none; }
 
 .btn-download {
     width:100%;
@@ -82,33 +82,33 @@ body{
 .inst-name{ text-align:center; font-size:28px; font-weight:bold; line-height:1.2; }
 .inst-place{ text-align:center; font-size:22px; font-weight:bold; margin-top:5px; }
 
-/* 180px LOGO SPACE */
+/* LOGO SPACE */
 .logo-box{
     text-align:center;
     margin:20px 0;
-    height: 150px;
+    height: 160px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .logo-box img{
-    max-height: 150px;
+    max-height: 160px;
     width: auto;
 }
 
-.department{ text-align:center; font-size:24px; font-weight:bold; min-height: 1.2em; }
+.department{ text-align:center; font-size:24px; font-weight:bold; min-height: 1.2em; text-transform: uppercase; }
 
 /* FADED LINE */
 .line{ 
     height:1px; 
-    background:#e2e8f0; /* Faded color */
+    background:#e2e8f0; 
     margin:25px 0; 
 }
 
 .assignment{ text-align:center; font-size:26px; font-weight:bold; }
 
 .section{ text-align:center; line-height:2.0; font-size:22px; }
-.section h3{ margin-bottom:10px; font-size:26px; }
+.section h3{ margin-bottom:10px; font-size:26px; border-bottom: 1px solid #eee; display: inline-block; padding-bottom: 2px; }
 
 /* PRINT MEDIA */
 @media print {
@@ -123,7 +123,6 @@ body{
         height: 100vh;
         padding: 60px;
     }
-    /* Printing faded lines accurately */
     .line { 
         background-color: #e2e8f0 !important; 
         -webkit-print-color-adjust: exact; 
@@ -138,15 +137,19 @@ body{
 <div class="container">
     <div class="form-box">
         <h2>Enter Details</h2>
-        <div class="input-box"><label>Assignment No.</label><input type="text" id="assignment" oninput="updatePreview()"></div>
+        <div class="input-box"><label>Assignment No.</label><input type="text" id="assignment" placeholder="e.g. 01" oninput="updatePreview()"></div>
+        
+        <div class="input-box"><label>Main Department (Logo Bottom)</label><input type="text" id="Dept" placeholder="e.g. Electrical Engineering" oninput="updatePreview()"></div>
+        
         <div class="input-box"><label>Subject Name</label><input type="text" id="subject" oninput="updatePreview()"></div>
         <div class="input-box"><label>Subject Code</label><input type="text" id="code" oninput="updatePreview()"></div>
         <div class="input-box"><label>Student Name</label><input type="text" id="name" oninput="updatePreview()"></div>
         <div class="input-box"><label>Roll Number</label><input type="text" id="roll" oninput="updatePreview()"></div>
         <div class="input-box"><label>Year / Semester</label><input type="text" id="semester" oninput="updatePreview()"></div>
-        <div class="input-box"><label>Submitted To</label><input type="text" id="teacher" oninput="updatePreview()"></div>
-        <div class="input-box"><label>Designation</label><input type="text" id="designation" oninput="updatePreview()"></div>
-        <div class="input-box"><label>Department</label><input type="text" id="department" oninput="updatePreview()"></div>
+        <div class="input-box"><label>Submitted To (Teacher Name)</label><input type="text" id="teacher" oninput="updatePreview()"></div>
+        <div class="input-box"><label>Teacher's Designation</label><input type="text" id="designation" oninput="updatePreview()"></div>
+        
+        <div class="input-box"><label>Teacher's Department</label><input type="text" id="teacherDept" placeholder="e.g. Dept. of Applied Science" oninput="updatePreview()"></div>
         
         <button class="btn-download" onclick="window.print()">Download PDF</button>
     </div>
@@ -162,10 +165,11 @@ body{
                 <img src="logo.png" alt="Logo">
             </div>
 
-            <div class="department" id="pdepartment"></div>
+            <div class="department" id="pMainDept"></div>
+            
             <div class="line"></div>
             
-            <div class="assignment">ASSIGNMENT NO. - <span id="passignment"></span></div>
+            <div class="assignment">Assignment No.: <span id="passignment"></span></div>
             <div class="line"></div>
             
             <div class="section">
@@ -188,7 +192,7 @@ body{
                 <h3>Submitted To:</h3>
                 <div><b id="pteacher"></b></div>
                 <div id="pdesignation"></div>
-                <div id="pdept2"></div>
+                <div id="pteacherDept"></div>
                 <div>THDC-IHET</div>
             </div>
             <div class="line"></div>
@@ -198,19 +202,24 @@ body{
 
 <script>
 function updatePreview(){
-    const fields = ['assignment', 'subject', 'code', 'name', 'roll', 'semester', 'teacher', 'designation', 'department'];
+    // IDs list
+    const fields = ['assignment', 'mainDept', 'subject', 'code', 'name', 'roll', 'semester', 'teacher', 'designation', 'teacherDept'];
+    
     fields.forEach(id => {
         const val = document.getElementById(id).value;
-        if(id === 'department') {
-            document.getElementById('pdepartment').innerText = val.toUpperCase();
-            document.getElementById('pdept2').innerText = val;
-        } else {
-            document.getElementById('p' + id).innerText = val;
+        const pElement = document.getElementById('p' + id);
+        
+        if(pElement) {
+            if(id === 'mainDept') {
+                // Formatting for Logo bottom
+                pElement.innerText = val ? "DEPARTMENT OF " + val.toUpperCase() : "";
+            } else {
+                pElement.innerText = val;
+            }
         }
     });
 }
 </script>
 
 </body>
-                                               </html>
-                                               
+</html>
